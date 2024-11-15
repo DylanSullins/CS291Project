@@ -1,3 +1,3 @@
-#CS291 Project
-###Dylan Sullins
-##Course Prerequisite Graph
+# CS291 Project
+### Dylan Sullins
+## Course Prerequisite Graph
