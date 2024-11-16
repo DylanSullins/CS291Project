@@ -1,0 +1,50 @@
+TEST;0;Test Required
+DEPT;0;Department Consent Required
+JUNIOR;0;Junior Status Required
+MATH;110;Precalculus Algebra;TEST 0
+MATH;120;Precalculus;TEST 0
+MATH;210;Calculus;MATH 110,MATH 120
+MATH;220;Calculus II;MATH 210
+STAT;235;Elementary Statistics;MATH 110,MATH 120
+COMP-SCI;100;Computer Fundamentals and Applications;MATH 110,TEST 0
+COMP-SCI;101;Problem Solving and Programming I;MATH 110,MATH 120,TEST 0
+COMP-SCI;191;Discrete Structures I;MATH 110,MATH 120,TEST 0
+COMP-SCI;201;Problem Solving and Programming II;COMP-SCI 101,COMP-SCI 191
+COMP-SCI;281;Introduction to Computer Architecture and Organization;COMP-SCI 101,COMP-SCI 191
+COMP-SCI;291;Discrete Structures II;COMP-SCI 191
+COMP-SCI;303;Data Structures;COMP-SCI 191,COMP-SCI 201
+COMP-SCI;304;Ethics and Professionalism;DEPT 0
+COMP-SCI;308;Computational Thinking and Programming;COMP-SCI 191
+COMP-SCI;320;Data Communications and Networking;COMP-SCI 291
+COMP-SCI;349;Java Programming with Applications;COMP-SCI 303
+COMP-SCI;353;Functional Programming;COMP-SCI 201;
+COMP-SCI;361;Introduction to Cybersecurity;COMP-SCI 320
+COMP-SCI;371;Database Design, Implementation and Validation;COMP-SCI 303
+COMP-SCI;394;Applied Probability;COMP-SCI 201,MATH 220,STAT 235
+COMP-SCI;404;Introduction to Algorithms and Complexity;COMP-SCI 291,COMP-SCI 303
+COMP-SCI;420;Advanced Networking and Applications;COMP-SCI 320
+COMP-SCI;421;Foundations of Data Networks;COMP-SCI 291,COMP-SCI 303,COMP-SCI 394
+COMP-SCI;423;Client/Server Programming Applications;COMP-SCI 303,COMP-SCI 431
+COMP-SCI;424;Software Methods and Tools;
+COMP-SCI;426;Network Security;COMP-SCI 320
+COMP-SCI;431;Introduction to Operating Systems;COMP-SCI 303,COMP-SCI 281
+COMP-SCI;436;Digital Forensics;COMP-SCI 201
+COMP-SCI;441;Programming Languages: Design and Implementation;COMP-SCI 303
+COMP-SCI;446;Distributed Computing System;COMP-SCI 431
+COMP-SCI;449;Foundations of Software Engineering;COMP-SCI 303
+COMP-SCI;451;Software Engineering Capstone;COMP-SCI 303,COMP-SCI 449
+COMP-SCI;456;Human Computer Interface;COMP-SCI 449
+COMP-SCI;457;Software Architecture: Requirements & Design;COMP-SCI 303
+COMP-SCI;458;Software Testing and Verification;COMP-SCI 303
+COMP-SCI;461;Introduction to Artificial Intelligence;COMP-SCI 303
+COMP-SCI;465;Introduction to Statistical Learning;COMP-SCI 394
+COMP-SCI;470;Introduction to Database Management Systems;COMP-SCI 303,COMP-SCI 431
+COMP-SCI;473;Data Compression;COMP-SCI 303
+COMP-SCI;476;Blockchain Technologies;COMP-SCI 431
+COMP-SCI;482;Computer Vision;COMP-SCI 303
+COMP-SCI;483;Software Security;COMP-SCI 303
+COMP-SCI;490;Special Topics;JUNIOR 0
+COMP-SCI;491;Internship;DEPT 0
+COMP-SCI;497;Directed Readings;DEPT 0
+COMP-SCI;498;Reseearch Seminar;DEPT 0
+COMP-SCI;499;Undergraduate Research;DEPT 0

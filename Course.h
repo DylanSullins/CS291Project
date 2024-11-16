@@ -39,4 +39,5 @@ public:
     void addPrereq(Course*);
 
     int calculatePrereqHeight(std::vector<Course*>&);
+    int calculatePrereqHeight();
 };

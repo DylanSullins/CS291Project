@@ -62,3 +62,9 @@ int Course::calculatePrereqHeight(std::vector<Course*>& prereqsSeen)
     }
     return prereqsCount;
 }
+
+int Course::calculatePrereqHeight()
+{
+    std::vector<Course*> prereqsSeen = {};
+    return calculatePrereqHeight(prereqsSeen);
+}
