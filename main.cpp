@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <filesystem>
 #include <sstream>
 #include <QApplication>
 #include <QGraphicsScene>
@@ -9,23 +8,21 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsLineItem>
 #include "Course.h"
+#include "CourseNode.h"
 
 
 Course* searchPrereqs(std::vector<Course*>, std::string);
-int readCoursesData(std::vector<Course*>&, std::string);
+int readCoursesData(std::vector<Course*>&, std::ifstream&);
 void SetCategoryFromString(Course*, std::string);
 QGraphicsEllipseItem* addCourseNode(QGraphicsScene*, Course*, int, int);
 void addEdge(QGraphicsScene*, QGraphicsEllipseItem*, QGraphicsEllipseItem*);
+std::string CategoryToString(Category);
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Hello." << std::endl;
-}
-
-int FAmain(int argc, char *argv[])
-{
     std::cout << "Starting application" << std::endl;
     // Display Initialization
+    QApplication::setAttribute(Qt::AA_UseSoftwareOpenGL);
     QApplication app(argc, argv);
     std::cout << "QApplication initialized" << std::endl;
     QGraphicsScene scene;
@@ -36,19 +33,20 @@ int FAmain(int argc, char *argv[])
     std::cout << "Set Window Title" << std::endl;
     view.resize(1600, 1200);
     std::cout << "Resizing" << std::endl;
-
-    std::cout << "Looking for file: " << std::filesystem::absolute("Catalog.dat") << std::endl;
     // Course Initialization
     std::vector<Course*> courses;
     std::cout << "Courses vector initialized" << std::endl;
-    std::ifstream testFile("Catalog.dat");
-    if (!testFile.is_open())
+    std::ifstream catalogFile("Catalog.dat");
+    if (!catalogFile.is_open())
     {
         std::cout << "ERROR: Failed to open Catalog.dat" << std::endl;
         return -1;
     }
-    testFile.close();
-    if (readCoursesData(courses, "Catalog.dat") != 0)
+    else
+    {
+        std::cout << "Success! Catalog.dat Opened" << std::endl;
+    }
+    if (readCoursesData(courses, catalogFile) != 0)
     {
         std::cout << "ERROR: Failed to read course data" << std::endl;
         return -1;
@@ -56,23 +54,34 @@ int FAmain(int argc, char *argv[])
     else if (courses.empty())
     {
         std::cout << "ERROR: No courses found in Catalog.dat" << std::endl;
+        return -1;
     }
     else 
     {
         std::cout << "Success! Course data read." << std::endl;
     }
+    catalogFile.close();
 
     // Map courses to ellipse nodes
     std::map<Course*, QGraphicsEllipseItem*> nodeMap;
     int x = 50, y = 50;
+    std::cout << "Initialized Map" << std::endl;
 
     for (auto course : courses)
     {
+        if (!course) continue;
+
         QGraphicsEllipseItem* node = addCourseNode(&scene, course, x, y);
         nodeMap[course] = node;
         x += 200;
-        if (x > 1400) {x = 50; y += 100;}
+        if (x > 1400)
+        {
+            x = 50;
+            y += 100;
+        }
     }
+
+    std::cout << "Mapped Courses to Nodes" << std::endl;
 
     // Connect Nodes with Edges
     for (auto course : courses) 
@@ -90,21 +99,13 @@ int FAmain(int argc, char *argv[])
     {
         delete course;
     }
-    return result;    
+    return result;
 }
 
-int readCoursesData(std::vector<Course*>& courses, std::string filename)
+int readCoursesData(std::vector<Course*>& courses, std::ifstream& fin)
 {
-    std::ifstream inFile;
-    inFile.open(filename);
-    if (!inFile.is_open())
-    {
-        std::cout << "ERROR: Failed to open file: " << filename << std::endl;
-        return -1;
-    }
-
     std::string line;
-    while(std::getline(inFile, line))
+    while(std::getline(fin, line))
     {
         std::vector<std::string> substrings;
         std::stringstream ss(line);
@@ -136,12 +137,12 @@ int readCoursesData(std::vector<Course*>& courses, std::string filename)
                 else
                 {
                     std::cout << "ERROR: Prerequisite not found" << std::endl;
+                    std::cout << "\tfor: " << course->getName() << std::endl;
                 }
             }
         }
         courses.push_back(course);
     }
-    inFile.close();
     return 0;
 }
 
@@ -193,15 +194,53 @@ void SetCategoryFromString(Course* course, std::string str)
 
 QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x, int y)
 {
-    QGraphicsEllipseItem* node = scene->addEllipse(x, y, 50, 50, QPen(Qt::black), QBrush(Qt::cyan));
-    QGraphicsTextItem* label = scene->addText(QString::fromStdString(course->getName()));
-    label->setPos(x + 10, y + 15);
+    if (!scene)
+    {
+        std::cout << "ERROR: QGraphicsScene is null" << std::endl;
+        return nullptr;
+    }
+
+    if (!course)
+    {
+        std::cout << "ERROR: Course is null" << std::endl;
+        return nullptr;
+    }
+
+    QString courseInfo = QString::fromStdString(
+        CategoryToString(course->getCategory()) + " " + std::to_string(course->getNum()) +
+        "\nCourse: " + course->getName()
+    );
+    CourseNode* node = new CourseNode(courseInfo, scene, x, y);
+    scene->addItem(node);
     return node;
 }
 
 void addEdge(QGraphicsScene* scene, QGraphicsEllipseItem* startNode, QGraphicsEllipseItem* endNode)
 {
-    QPointF startCenter = startNode->rect().center() + startNode->pos();
-    QPointF endCenter = endNode->rect().center() + endNode->pos();
-    QGraphicsLineItem* edge = scene->addLine(QLineF(startCenter, endCenter), QPen(Qt::black));
+    QPointF startCenter = startNode->mapToScene(startNode->rect().center());
+    QPointF endCenter = endNode->mapToScene(endNode->rect().center());
+    scene->addLine(QLineF(startCenter, endCenter), QPen(Qt::black));
+}
+
+std::string CategoryToString(Category cat)
+{
+    switch(cat)
+    {
+        case Category::COMP_SCI:
+            return "COMP_SCI";
+        case Category::DEPT:
+            return "DEPT";
+        case Category::JUNIOR:
+            return "JUNIOR";
+        case Category::MATH:
+            return "MATH";
+        case Category::NONE:
+            return "NONE";
+        case Category::STATS:
+            return "STATS";
+        case Category::TEST:
+            return "TEST";
+        default:
+            return "EMPTY";
+    }
 }
