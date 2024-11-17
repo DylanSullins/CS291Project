@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
             maxPrereqCount = prereqCount;
             maxPrereqCourseName = course->getName();
         }
-        if (prereqCount < minPrereqCount) 
+        if (prereqCount < minPrereqCount && (course->getCategory() != Category::NONE && course->getCategory() != Category::TEST && course->getCategory() != Category::DEPT && course->getCategory() != Category::JUNIOR)) 
         {
             minPrereqCount = prereqCount;
             minPrereqCourseName = course->getName();
