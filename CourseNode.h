@@ -14,10 +14,9 @@ class CourseNode : public QGraphicsEllipseItem
 public:
     CourseNode(const QString& courseInfo, QGraphicsScene* scene, 
                 int x, int y, 
-                std::map<Course*, std::vector<QGraphicsLineItem*>>& edgesMap,
                 Course* coursePtr,
                 int width = 50, int height = 50)
-    : QGraphicsEllipseItem(x, y, width, height), courseInfo(courseInfo), scene(scene), nodeEdges(edgesMap), course(coursePtr)
+    : QGraphicsEllipseItem(x, y, width, height), courseInfo(courseInfo), scene(scene), course(coursePtr)
     {
         setBrush(QBrush(Qt::cyan));
         setPen(QPen(Qt::black));
@@ -50,9 +49,10 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override 
     {
-        if (nodeEdges.count(course) > 0) 
+        std::cout << "HERE" << std::endl;
+        if (!course->getEdges().empty()) 
         {
-            for (auto edge : nodeEdges[course])
+            for (auto edge : course->getEdges())
             {
                 QPen highlightPen(Qt::yellow);
                 highlightPen.setWidth(2);
@@ -71,9 +71,9 @@ protected:
 
     void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override 
     {
-        if (nodeEdges.count(course) > 0)
+        if (!course->getEdges().empty())
         {
-            for (auto edge : nodeEdges[course])
+            for (auto edge : course->getEdges())
             {
                 QPen defaultPen(Qt::black);
                 edge->setPen(defaultPen);
@@ -94,5 +94,4 @@ private:
     QGraphicsTextItem* title;
     QGraphicsTextItem* infoBox;
     QGraphicsRectItem* background;
-    std::map<Course*, std::vector<QGraphicsLineItem*>>& nodeEdges;
 };

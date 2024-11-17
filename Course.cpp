@@ -58,6 +58,8 @@ QString Course::getShortTitle()
     return title;
 }
 
+std::vector<QGraphicsLineItem*> Course::getEdges(){return edges;}
+
 void Course::setName(std::string n){name = n;}
 void Course::setNum(int n){num = n;}
 void Course::setCategory(Category c){category = c;}
@@ -65,6 +67,11 @@ void Course::setCategory(Category c){category = c;}
 void Course::addPrereq(Course* prereq)
 {
     prerequisites.push_back(prereq);
+}
+
+void Course::addEdge(QGraphicsLineItem* edge)
+{
+    edges.push_back(edge);
 }
 
 int Course::calculatePrereqHeight(std::vector<Course*>& prereqsSeen)

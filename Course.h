@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <QString>
+#include <QGraphicsLineItem>
 
 enum Category
 {
@@ -20,6 +21,7 @@ protected:
     std::string name;
     int num;
     Category category;
+    std::vector<QGraphicsLineItem*> edges;
 
 public:
 
@@ -34,12 +36,14 @@ public:
     Category getCategory();
     std::string getCategoryName();
     QString getShortTitle();
+    std::vector<QGraphicsLineItem*> getEdges();
 
     void setName(std::string);
     void setNum(int);
     void setCategory(Category);
 
     void addPrereq(Course*);
+    void addEdge(QGraphicsLineItem*);
 
     int calculatePrereqHeight(std::vector<Course*>&);
     int calculatePrereqHeight();

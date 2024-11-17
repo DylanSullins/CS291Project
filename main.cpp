@@ -15,7 +15,7 @@
 Course* searchPrereqs(std::vector<Course*>, std::string);
 int readCoursesData(std::vector<Course*>&, std::ifstream&);
 void SetCategoryFromString(Course*, std::string);
-QGraphicsEllipseItem* addCourseNode(QGraphicsScene*, Course*, int, int, std::map<Course*, std::vector<QGraphicsLineItem*>>);
+QGraphicsEllipseItem* addCourseNode(QGraphicsScene*, Course*, int, int);
 QGraphicsLineItem* addEdge(QGraphicsScene*, QGraphicsEllipseItem*, QGraphicsEllipseItem*);
 std::string CategoryToString(Category);
 
@@ -65,14 +65,13 @@ int main(int argc, char *argv[])
 
     // Map courses to ellipse nodes
     std::map<Course*, QGraphicsEllipseItem*> nodeMap;
-    std::map<Course*, std::vector<QGraphicsLineItem*>> nodeEdges;
     int x = 50, y = 50;
     std::cout << "Initialized Map" << std::endl;
 
     for (auto course : courses)
     {
         if (!course) continue;
-        QGraphicsEllipseItem* node = addCourseNode(&scene, course, x, y, nodeEdges);
+        QGraphicsEllipseItem* node = addCourseNode(&scene, course, x, y);
         nodeMap[course] = node;
         x += 200;
         if (x > 1400)
@@ -90,7 +89,7 @@ int main(int argc, char *argv[])
         for (auto prereq : course->prerequisites)
         {
             QGraphicsLineItem* edge = addEdge(&scene, nodeMap[course], nodeMap[prereq]);
-            nodeEdges[course].push_back(edge);
+            course->addEdge(edge);
         }
     }
 
@@ -216,7 +215,7 @@ void SetCategoryFromString(Course* course, std::string str)
     else if (str == "JUNIOR"){course->setCategory(Category::JUNIOR);}
 }
 
-QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x, int y, std::map<Course*, std::vector<QGraphicsLineItem*>> edgeMap)
+QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x, int y)
 {
     if (!scene)
     {
@@ -234,7 +233,7 @@ QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x
         CategoryToString(course->getCategory()) + " " + std::to_string(course->getNum()) +
         "\nCourse: " + course->getName() + "\nPrereqs: " + std::to_string(course->calculatePrereqHeight())
     );
-    CourseNode* node = new CourseNode(courseInfo, scene, x, y, edgeMap, course);
+    CourseNode* node = new CourseNode(courseInfo, scene, x, y, course);
     scene->addItem(node);
     return node;
 }
