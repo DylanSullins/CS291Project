@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     std::cout << "Set Window Title" << std::endl;
     view.resize(1600, 1200);
     std::cout << "Resizing" << std::endl;
+    view.setBackgroundBrush(QBrush(Qt::lightGray));
     // Course Initialization
     std::vector<Course*> courses;
     std::cout << "Courses vector initialized" << std::endl;
