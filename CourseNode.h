@@ -49,7 +49,6 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override 
     {
-        std::cout << "HERE" << std::endl;
         if (!course->getEdges().empty()) 
         {
             for (auto edge : course->getEdges())
