@@ -47,27 +47,12 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override 
     {
-        //if (infoBox) return;
         QPointF mousePos = event->scenePos();
-        //infoBox = new QGraphicsTextItem();
-        //infoBox->setPlainText(courseInfo);
-        //infoBox->setZValue(1);
-        //QRectF textRect = infoBox->boundingRect();
-        //QRectF paddedRect = textRect.adjusted(-5,-5,75,5);
-        //scene->addItem(infoBox);
-
-        //QGraphicsRectItem* background = new QGraphicsRectItem(paddedRect);
-        //background->setBrush(QBrush(Qt::white));
-        //background->setPen(QPen(Qt::black));
+        
         background->setZValue(1);
-
-        //scene->addItem(background);
         background->setPos(mousePos);
         infoBox->setParentItem(background);
         infoBox->setPos(5,5);
-        //QFont font;
-        //infoBox->setFont(font);
-        //infoBox->setDefaultTextColor(Qt::black);
         background->show();
         infoBox->show();
     }

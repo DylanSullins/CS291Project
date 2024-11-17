@@ -232,7 +232,7 @@ QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x
 
     QString courseInfo = QString::fromStdString(
         CategoryToString(course->getCategory()) + " " + std::to_string(course->getNum()) +
-        "\nCourse: " + course->getName()
+        "\nCourse: " + course->getName() + "\nPrereqs: " + std::to_string(course->calculatePrereqHeight())
     );
     CourseNode* node = new CourseNode(courseInfo, scene, x, y);
     scene->addItem(node);
@@ -241,9 +241,21 @@ QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x
 
 void addEdge(QGraphicsScene* scene, QGraphicsEllipseItem* startNode, QGraphicsEllipseItem* endNode)
 {
-    QPointF startCenter = startNode->mapToScene(startNode->rect().center());
-    QPointF endCenter = endNode->mapToScene(endNode->rect().center());
-    scene->addLine(QLineF(startCenter, endCenter), QPen(Qt::black));
+    QPointF endCenter = startNode->mapToScene(startNode->rect().center());
+    QPointF startCenter = endNode->mapToScene(endNode->rect().center());
+
+    QGraphicsLineItem* edge = scene->addLine(QLineF(startCenter, endCenter), QPen(Qt::black));
+    QLineF line(startCenter, endCenter);
+    double angle = std::atan2(line.dy(), line.dx());
+
+    const double arrowSize = 10;
+
+    QPointF arrowP1 = endCenter + QPointF(-std::cos(angle + M_PI / 4) * arrowSize,
+                                          -std::sin(angle + M_PI / 4) * arrowSize);
+    QPointF arrowP2 = endCenter + QPointF(-std::cos(angle - M_PI / 4) * arrowSize,
+                                          -std::sin(angle - M_PI / 4) * arrowSize);
+    QGraphicsLineItem* arrowLine1 = scene->addLine(QLineF(endCenter, arrowP1), QPen(Qt::black));
+    QGraphicsLineItem* arrowLine2 = scene->addLine(QLineF(endCenter, arrowP2), QPen(Qt::black));
 }
 
 std::string CategoryToString(Category cat)
