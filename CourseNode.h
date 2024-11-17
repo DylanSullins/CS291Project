@@ -12,8 +12,12 @@
 class CourseNode : public QGraphicsEllipseItem
 {
 public:
-    CourseNode(const QString& courseInfo, QGraphicsScene* scene, int x, int y, int width = 50, int height = 50)
-    : QGraphicsEllipseItem(x, y, width, height), courseInfo(courseInfo), scene(scene) 
+    CourseNode(const QString& courseInfo, QGraphicsScene* scene, 
+                int x, int y, 
+                std::map<Course*, std::vector<QGraphicsLineItem*>>& edgesMap,
+                Course* coursePtr,
+                int width = 50, int height = 50)
+    : QGraphicsEllipseItem(x, y, width, height), courseInfo(courseInfo), scene(scene), nodeEdges(edgesMap), course(coursePtr)
     {
         setBrush(QBrush(Qt::cyan));
         setPen(QPen(Qt::black));
@@ -28,7 +32,6 @@ public:
         infoBox->setDefaultTextColor(Qt::black);
         QRectF textRect = infoBox->boundingRect();
         QRectF paddedRect = textRect.adjusted(-5,-5,75,5);
-        //QRect textRect = infoBox->boundingRect().adjusted(-5, -5, 75, 5);
         background = new QGraphicsRectItem(paddedRect);
         background->setBrush(QBrush(Qt::white));
         background->setPen(QPen(Qt::black));
@@ -47,6 +50,15 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override 
     {
+        if (nodeEdges.count(course) > 0) 
+        {
+            for (auto edge : nodeEdges[course])
+            {
+                QPen highlightPen(Qt::yellow);
+                highlightPen.setWidth(2);
+                edge->setPen(highlightPen);
+            }
+        }
         QPointF mousePos = event->scenePos();
         
         background->setZValue(1);
@@ -59,6 +71,14 @@ protected:
 
     void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override 
     {
+        if (nodeEdges.count(course) > 0)
+        {
+            for (auto edge : nodeEdges[course])
+            {
+                QPen defaultPen(Qt::black);
+                edge->setPen(defaultPen);
+            }
+        }
         if (infoBox)
         {
             background->hide();
@@ -67,10 +87,12 @@ protected:
     }
 
 private:
+    Course* course;
     QString courseInfo;
     QString titleQstr;
     QGraphicsScene* scene;
     QGraphicsTextItem* title;
     QGraphicsTextItem* infoBox;
     QGraphicsRectItem* background;
+    std::map<Course*, std::vector<QGraphicsLineItem*>>& nodeEdges;
 };

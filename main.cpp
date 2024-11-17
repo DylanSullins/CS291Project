@@ -15,8 +15,8 @@
 Course* searchPrereqs(std::vector<Course*>, std::string);
 int readCoursesData(std::vector<Course*>&, std::ifstream&);
 void SetCategoryFromString(Course*, std::string);
-QGraphicsEllipseItem* addCourseNode(QGraphicsScene*, Course*, int, int);
-void addEdge(QGraphicsScene*, QGraphicsEllipseItem*, QGraphicsEllipseItem*);
+QGraphicsEllipseItem* addCourseNode(QGraphicsScene*, Course*, int, int, std::map<Course*, std::vector<QGraphicsLineItem*>>);
+QGraphicsLineItem* addEdge(QGraphicsScene*, QGraphicsEllipseItem*, QGraphicsEllipseItem*);
 std::string CategoryToString(Category);
 
 int main(int argc, char *argv[])
@@ -65,15 +65,14 @@ int main(int argc, char *argv[])
 
     // Map courses to ellipse nodes
     std::map<Course*, QGraphicsEllipseItem*> nodeMap;
+    std::map<Course*, std::vector<QGraphicsLineItem*>> nodeEdges;
     int x = 50, y = 50;
     std::cout << "Initialized Map" << std::endl;
 
     for (auto course : courses)
     {
         if (!course) continue;
-        std::cout << "HERE AT " << course->getName() << std::endl;
-        QGraphicsEllipseItem* node = addCourseNode(&scene, course, x, y);
-        std::cout << "NODE CREATED" << std::endl;
+        QGraphicsEllipseItem* node = addCourseNode(&scene, course, x, y, nodeEdges);
         nodeMap[course] = node;
         x += 200;
         if (x > 1400)
@@ -90,7 +89,8 @@ int main(int argc, char *argv[])
     {
         for (auto prereq : course->prerequisites)
         {
-            addEdge(&scene, nodeMap[course], nodeMap[prereq]);
+            QGraphicsLineItem* edge = addEdge(&scene, nodeMap[course], nodeMap[prereq]);
+            nodeEdges[course].push_back(edge);
         }
     }
 
@@ -216,7 +216,7 @@ void SetCategoryFromString(Course* course, std::string str)
     else if (str == "JUNIOR"){course->setCategory(Category::JUNIOR);}
 }
 
-QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x, int y)
+QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x, int y, std::map<Course*, std::vector<QGraphicsLineItem*>> edgeMap)
 {
     if (!scene)
     {
@@ -234,13 +234,14 @@ QGraphicsEllipseItem* addCourseNode(QGraphicsScene* scene, Course* course, int x
         CategoryToString(course->getCategory()) + " " + std::to_string(course->getNum()) +
         "\nCourse: " + course->getName() + "\nPrereqs: " + std::to_string(course->calculatePrereqHeight())
     );
-    CourseNode* node = new CourseNode(courseInfo, scene, x, y);
+    CourseNode* node = new CourseNode(courseInfo, scene, x, y, edgeMap, course);
     scene->addItem(node);
     return node;
 }
 
-void addEdge(QGraphicsScene* scene, QGraphicsEllipseItem* startNode, QGraphicsEllipseItem* endNode)
+QGraphicsLineItem* addEdge(QGraphicsScene* scene, QGraphicsEllipseItem* startNode, QGraphicsEllipseItem* endNode)
 {
+    
     QPointF endCenter = startNode->mapToScene(startNode->rect().center());
     QPointF startCenter = endNode->mapToScene(endNode->rect().center());
 
@@ -256,6 +257,7 @@ void addEdge(QGraphicsScene* scene, QGraphicsEllipseItem* startNode, QGraphicsEl
                                           -std::sin(angle - M_PI / 4) * arrowSize);
     QGraphicsLineItem* arrowLine1 = scene->addLine(QLineF(endCenter, arrowP1), QPen(Qt::black));
     QGraphicsLineItem* arrowLine2 = scene->addLine(QLineF(endCenter, arrowP2), QPen(Qt::black));
+    return edge;
 }
 
 std::string CategoryToString(Category cat)
