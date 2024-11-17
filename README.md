@@ -8,13 +8,19 @@ This project requires Qt version 6.8.0, a graphical library for C++. This projec
 After cloning the repository, open a terminal in the Build folder and run the following commands:
 ### Windows
 *qmake*                     : Prepares makefile
+
 *mingw32-make*              : Builds project
+
 *cd release*                : Change directory into the release directory
+
 *windeployqt [executable]*  : Installs necessary .dll files
+
 Run the executable created by mingw32-make. 
 ### Linux
 *qmake*                     : Prepares makefile
+
 *make*                      : Builds project
+
 Run the executable created by make
 
 ## Data
