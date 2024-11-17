@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <QString>
 
 enum Category
 {
@@ -31,6 +32,8 @@ public:
     std::string getName();
     int getNum();
     Category getCategory();
+    std::string getCategoryName();
+    QString getShortTitle();
 
     void setName(std::string);
     void setNum(int);

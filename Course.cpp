@@ -27,6 +27,37 @@ int Course::getNum(){return num;}
 
 Category Course::getCategory(){return category;}
 
+std::string Course::getCategoryName()
+{
+    switch(category)
+    {
+        case Category::COMP_SCI:
+            return "CS";
+        case Category::MATH:
+            return "MATH";
+        case Category::STATS:
+            return "STATS";
+        case Category::TEST:
+            return "TEST";
+        case Category::DEPT:
+            return "DEPT";
+        case Category::NONE:
+            return "NONE";
+        case Category::JUNIOR:
+            return "JUNIOR";
+        default:
+            return "ERROR";
+    }
+}
+
+QString Course::getShortTitle()
+{
+    QString title = QString::fromStdString(
+        getCategoryName() + "\n" + std::to_string(getNum())
+    );
+    return title;
+}
+
 void Course::setName(std::string n){name = n;}
 void Course::setNum(int n){num = n;}
 void Course::setCategory(Category c){category = c;}
@@ -68,3 +99,4 @@ int Course::calculatePrereqHeight()
     std::vector<Course*> prereqsSeen = {};
     return calculatePrereqHeight(prereqsSeen);
 }
+

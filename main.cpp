@@ -7,6 +7,7 @@
 #include <QGraphicsEllipseItem>
 #include <QGraphicsTextItem>
 #include <QGraphicsLineItem>
+#include <QString>
 #include "Course.h"
 #include "CourseNode.h"
 
@@ -70,8 +71,9 @@ int main(int argc, char *argv[])
     for (auto course : courses)
     {
         if (!course) continue;
-
+        std::cout << "HERE AT " << course->getName() << std::endl;
         QGraphicsEllipseItem* node = addCourseNode(&scene, course, x, y);
+        std::cout << "NODE CREATED" << std::endl;
         nodeMap[course] = node;
         x += 200;
         if (x > 1400)
@@ -91,6 +93,28 @@ int main(int argc, char *argv[])
             addEdge(&scene, nodeMap[course], nodeMap[prereq]);
         }
     }
+
+    int maxPrereqCount = 0;
+    int minPrereqCount = 1;
+    std::string maxPrereqCourseName;
+    std::string minPrereqCourseName;
+    for (auto course : courses)
+    {
+        int prereqCount = course->calculatePrereqHeight();
+        if (prereqCount > maxPrereqCount) 
+        {
+            maxPrereqCount = prereqCount;
+            maxPrereqCourseName = course->getName();
+        }
+        if (prereqCount < minPrereqCount) 
+        {
+            minPrereqCount = prereqCount;
+            minPrereqCourseName = course->getName();
+        }
+    }
+    std::cout << "MAX PREREQ: " << maxPrereqCourseName << " with " << maxPrereqCount << " prerequisistes." << std::endl;
+    std::cout << "MIN PREREQ: " << minPrereqCourseName << " with " << minPrereqCount << " prerequisistes." << std::endl;
+    
 
     view.show();
     
